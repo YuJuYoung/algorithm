@@ -32,49 +32,53 @@ public class Problem_21609 {
 		
 		while (true) {
 			List<int[]> maxList = null;
-			int[] maxStandard = null;
+			boolean[][] visited = new boolean[N][N];
+			
+			int[] maxStd = null;
 			int maxRainbow = 0;
 			
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
-					if (map[i][j] < 0) {
+					if (map[i][j] <= 0 || visited[i][j]) {
 						continue;
 					}
-					boolean[][] visited = new boolean[N][N];
 					
 					List<int[]> list = new ArrayList<>();
-					int[] standard = { j, i };
-					int rainbow = dfs(j, i, map[i][j], list, visited, standard);
+					int[] std = { j, i };
+					int rainbow;
 					
+					rainbow = dfs(j, i, map[i][j], list, visited, std);
+					
+					for (int[] point : list) {
+						visited[point[1]][point[0]] = false;
+					}
 					if (list.size() < 2) {
 						continue;
 					}
 					
-					if (maxList == null) {
-						maxList = list;
-						maxRainbow = rainbow;
-						maxStandard = standard;
-					} else {
-						if (maxList.size() < list.size()) {
-							maxList = list;
-							maxRainbow = rainbow;
-							maxStandard = standard;
+					if (maxList != null) {
+						if (list.size() < maxList.size()) {
 							continue;
 						}
-						if (maxList.size() == list.size()) {
-							if (rainbow > maxRainbow) {
-								maxList = list;
-								maxRainbow = rainbow;
-								maxStandard = standard;
+						if (list.size() == maxList.size()) {
+							if (rainbow < maxRainbow) {
 								continue;
 							}
-							if (standard[1] > maxStandard[1] || (standard[1] == maxStandard[1] && standard[0] > maxStandard[0])) {
-								maxList = list;
-								maxRainbow = rainbow;
-								maxStandard = standard;
+							if (rainbow == maxRainbow) {
+								if (std[1] < maxStd[1]) {
+									continue;
+								}
+								if (std[1] == maxStd[1]) {
+									if (std[0] < maxStd[0]) {
+										continue;
+									}
+								}
 							}
 						}
 					}
+					maxList = list;
+					maxRainbow = rainbow;
+					maxStd = std;
 				}
 			}
 			
@@ -96,10 +100,10 @@ public class Problem_21609 {
 	
 	private static int[] dx = { 1, -1, 0, 0 }, dy = { 0, 0, 1, -1 };
 	
-	private static int dfs(int x, int y, int color, List<int[]> list, boolean[][] visited, int[] standard) {
-		if (standard[1] > y || (standard[1] == y && standard[0] > x)) {
-			standard[0] = x;
-			standard[1] = y;
+	private static int dfs(int x, int y, int color, List<int[]> list, boolean[][] visited, int[] std) {
+		if (map[y][x] > 0 && (y < std[1] || (std[1] == y && x < std[0]))) {
+			std[0] = x;
+			std[1] = y;
 		}
 		visited[y][x] = true;
 		
@@ -109,8 +113,8 @@ public class Problem_21609 {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
 			
-			if (isInside(nx, ny) && !visited[ny][nx] && (map[ny][nx] == 0 || map[ny][nx] == color)) {
-				rainbow += dfs(x + dx[i], y + dy[i], color, list, visited, standard);
+			if (isInside(nx, ny) && (map[ny][nx] == 0 || map[ny][nx] == color) && !visited[ny][nx]) {
+				rainbow += dfs(x + dx[i], y + dy[i], color, list, visited, std);
 			}
 		}
 		list.add(new int[] { x, y });
