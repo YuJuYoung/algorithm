@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Problem_21609 {
@@ -44,10 +46,10 @@ public class Problem_21609 {
 					}
 					
 					List<int[]> list = new ArrayList<>();
-					int[] std = { j, i };
-					int rainbow;
 					
-					rainbow = dfs(j, i, map[i][j], list, visited, std);
+					int[] result = bfs(j, i, list, visited);
+					int rainbow = result[0];
+					int[] std = { result[1], result[2] };
 					
 					for (int[] point : list) {
 						visited[point[1]][point[0]] = false;
@@ -100,7 +102,7 @@ public class Problem_21609 {
 	
 	private static int[] dx = { 1, -1, 0, 0 }, dy = { 0, 0, 1, -1 };
 	
-	private static int dfs(int x, int y, int color, List<int[]> list, boolean[][] visited, int[] std) {
+	/*private static int dfs(int x, int y, int color, List<int[]> list, boolean[][] visited, int[] std) {
 		if (map[y][x] > 0 && (y < std[1] || (std[1] == y && x < std[0]))) {
 			std[0] = x;
 			std[1] = y;
@@ -119,6 +121,44 @@ public class Problem_21609 {
 		}
 		list.add(new int[] { x, y });
 		return rainbow;
+	}*/
+	
+	private static int[] bfs(int x, int y, List<int[]> list, boolean[][] visited) {
+		Queue<int[]> q = new LinkedList<>();
+		
+		q.add(new int[] { x, y });
+		visited[y][x] = true;
+		
+		int stdX = x, stdY = y;
+		int rainbow = 0;
+		int color = map[y][x];
+		
+		while (!q.isEmpty()) {
+			int[] pair = q.poll();
+			int px = pair[0], py = pair[1];
+			
+			list.add(new int[] { px, py });
+			
+			if (map[py][px] != 0) {
+				if (py < stdY || (py == stdY && px < stdX)) {
+					stdX = px;
+					stdY = py;
+				}
+			} else {
+				rainbow++;
+			}
+			
+			for (int i = 0; i < 4; i++) {
+				int nx = px + dx[i];
+				int ny = py + dy[i];
+				
+				if (isInside(nx, ny) && (map[ny][nx] == 0 || map[ny][nx] == color) && !visited[ny][nx]) {
+					q.add(new int[] { nx, ny });
+					visited[ny][nx] = true;
+				}
+			}
+		}
+		return new int[] { rainbow, stdX, stdY };
 	}
 	
 	private static boolean isInside(int x, int y) {
