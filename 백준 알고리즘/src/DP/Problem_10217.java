@@ -12,8 +12,8 @@ import java.util.StringTokenizer;
 public class Problem_10217 {
 	
 	private static int N, M;
-	private static int[][] airports;
-	private static Ticket[] tickets;
+	private static int[][] dp;
+	private static Node[] nodes;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -24,8 +24,8 @@ public class Problem_10217 {
 			
 			N = Integer.parseInt(st.nextToken());
 			M = Integer.parseInt(st.nextToken());
-			airports = new int[N][M];
-			tickets = new Ticket[N + 1];
+			dp = new int[N + 1][M + 1];
+			nodes = new Node[N + 1];
 			
 			for (int K = Integer.parseInt(st.nextToken()); K > 0; K--) {
 				st = new StringTokenizer(br.readLine());
@@ -34,7 +34,8 @@ public class Problem_10217 {
 				int v = Integer.parseInt(st.nextToken());
 				int c = Integer.parseInt(st.nextToken());
 				int d = Integer.parseInt(st.nextToken());
-				tickets[u] = new Ticket(v, c, d, tickets[u]);
+				
+				nodes[u] = new Node(v, c, d, nodes[u]);
 			}
 			bw.write(bfs());
 		}
@@ -42,63 +43,55 @@ public class Problem_10217 {
 	}
 	
 	private static String bfs() {
-		Queue<int[]> q = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
+		Queue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
 		
-		q.add(new int[] { 1, 0, 0 });
-		airports[1][0] = -1;
+		pq.add(new int[] { 1, 0, 1 });
+		dp[1][0] = 1;
 		
 		int min = Integer.MAX_VALUE;
 		
-		while (!q.isEmpty()) {
-			int[] tmp = q.poll();
-			int u = tmp[0];
-			int c = tmp[1];
-			int d = tmp[2];
+		while (!pq.isEmpty()) {
+			int[] arr = pq.poll();
+			int u = arr[0];
+			int c = arr[1];
+			int d = arr[2];
 			
-			for (Ticket ticket = tickets[u]; ticket != null; ticket = ticket.next) {
-				int nc = c + ticket.c;
+			if (u == N) {
+				min = d;
+				continue;
+			}
+			if (c == M) {
+				continue;
+			}
+			
+			for (Node node = nodes[u]; node != null; node = node.next) {
+				int v = node.v;
+				int nc = c + node.c;
+				int nd = d + node.d;
 				
-				if (nc > M) {
+				if (nc > M || nd >= min) {
 					continue;
 				}
-				int nd = d + ticket.d;
-				
-				if (min <= nd) {
-					continue;
-				}
-				int v = ticket.v;
-				
-				if (v == N) {
-					min = nd;
-					continue;
-				}
-				if (nc == M) {
-					continue;
-				}
-				if (airports[v][nc] != 0 && airports[v][nc] <= nd) {
+				if (dp[v][nc] != 0 && nd >= dp[v][nc]) {
 					continue;
 				}
 				
-				q.add(new int[] { v, nc, nd });
-				airports[v][nc] = nd;
+				pq.add(new int[] { v, nc, nd });
+				dp[v][nc] = nd;
 			}
 		}
-		
-		if (min == Integer.MAX_VALUE) {
-			return "Poor KCM\n";
-		}
-		return (min + "\n");
+		return min == Integer.MAX_VALUE ? "Poor KCM\n" : ((min - 1) + "\n");
 	}
 	
-	private static class Ticket {
+	private static class Node {
 		int v, c, d;
-		Ticket next;
+		Node next;
 		
-		public Ticket(int v, int c, int d, Ticket ticket) {
+		public Node(int v, int c, int d, Node node) {
 			this.v = v;
 			this.c = c;
 			this.d = d;
-			next = ticket;
+			next = node;
 		}
 	}
 
