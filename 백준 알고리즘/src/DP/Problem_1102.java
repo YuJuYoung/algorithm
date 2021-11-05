@@ -42,21 +42,32 @@ public class Problem_1102 {
 			}
 		}
 		
-		int min = P - N - broke.size();
+		int cnt = P - N - broke.size();
 		
-		if (min <= 0) {
+		if (cnt <= 0) {
 			System.out.println(0);
 		} else {
 			int len = broke.size();
 			
-			dp = new int[len][min + 1][2];
-			visited = new boolean[len][min + 1];
+			dp = new int[len][cnt + 1][2];
+			visited = new boolean[len][cnt + 1];
 			
 			for (int i = 0; i < len; i++) {
 				int index = broke.get(i);
 			}
-			System.out.println(visited[len - 1][min] ? dp[len - 1][min][1] : -1);
+			System.out.println(visited[len - 1][cnt] ? dp[len - 1][cnt][1] : -1);
 		}
+	}
+	
+	private static int[] getMin(int index, int YNBit) {
+		int[] min = { 0, Integer.MAX_VALUE };
+		
+		for (int i = 0; i < N; i++) {
+			if (i == index) {
+				continue;
+			}
+		}
+		return null;
 	}
 
 }
