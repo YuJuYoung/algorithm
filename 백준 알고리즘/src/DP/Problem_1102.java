@@ -3,18 +3,16 @@ package DP;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Problem_1102 {
 	
-	private static int N, P, start;
+	private static int N, P;
 	private static int[][] costs;
-	private static char[] YN;
-	
-	private static int[][][] dp;
-	private static boolean[][] visited;
-	private static List<Integer> broke;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -30,44 +28,70 @@ public class Problem_1102 {
 			}
 		}
 		
-		YN = br.readLine().toCharArray();
-		P = Integer.parseInt(br.readLine());
-		start = 0;
+		String str = br.readLine();
+		int start = 0;
 		
 		for (int i = 0; i < N; i++) {
-			if (YN[i] == 'N') {
-				broke.add(i);
-			} else {
+			if (str.charAt(i) == 'Y') {
 				start += 1 << i;
 			}
 		}
 		
-		int cnt = P - N - broke.size();
+		P = Integer.parseInt(br.readLine());
 		
-		if (cnt <= 0) {
-			System.out.println(0);
-		} else {
-			int len = broke.size();
-			
-			dp = new int[len][cnt + 1][2];
-			visited = new boolean[len][cnt + 1];
-			
-			for (int i = 0; i < len; i++) {
-				int index = broke.get(i);
-			}
-			System.out.println(visited[len - 1][cnt] ? dp[len - 1][cnt][1] : -1);
-		}
+		System.out.println(bfs(start));
 	}
 	
-	private static int[] getMin(int index, int YNBit) {
-		int[] min = { 0, Integer.MAX_VALUE };
+	private static int bfs(int start) {
+		Queue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
+		Set<Integer> hs = new HashSet<>();
 		
-		for (int i = 0; i < N; i++) {
-			if (i == index) {
+		pq.add(new int[] { start, 0 });
+		
+		while (!pq.isEmpty()) {
+			int[] node = pq.poll();
+			
+			int visited = node[0];
+			int cost = node[1];
+			
+			if (hs.contains(visited)) {
 				continue;
 			}
+			hs.add(visited);
+			
+			if (isEnded(visited)) {
+				return cost;
+			}
+			
+			for (int i = 0; i < N; i++) {
+				int num = visited | (1 << i);
+				
+				if (num == visited) {
+					continue;
+				}
+				
+				for (int j = 0; j < N; j++) {
+					if (i == j || (visited | (1 << j)) != visited) {
+						continue;
+					}
+					pq.add(new int[] { num, cost + costs[j][i] });
+				}
+			}
 		}
-		return null;
+		return -1;
+	}
+	
+	private static boolean isEnded(int num) {
+		int cnt = 0;
+		
+		for (int i = 0; i < N; i++) {
+			if ((num | (1 << i)) == num) {
+				if (++cnt == P) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
