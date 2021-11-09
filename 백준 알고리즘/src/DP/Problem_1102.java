@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 public class Problem_1102 {
 	
-	private static int N, P;
+	private static int N;
 	private static int[][] costs;
 
 	public static void main(String[] args) throws IOException {
@@ -29,69 +29,78 @@ public class Problem_1102 {
 		}
 		
 		String str = br.readLine();
-		int start = 0;
+		int startBit = 0, turnedOnCnt = 0;
 		
 		for (int i = 0; i < N; i++) {
 			if (str.charAt(i) == 'Y') {
-				start += 1 << i;
+				startBit += 1 << i;
+				turnedOnCnt++;
 			}
 		}
 		
-		P = Integer.parseInt(br.readLine());
+		int P = Integer.parseInt(br.readLine());
+		int startTime = P - turnedOnCnt;
 		
-		System.out.println(bfs(start));
+		if (startTime <= 0) {
+			System.out.println(0);
+		} else {
+			System.out.println(findMin(startBit, startTime));
+		}
 	}
 	
-	private static int bfs(int start) {
-		Queue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
-		Set<Integer> hs = new HashSet<>();
+	private static int findMin(int startBit, int time) {
+		Queue<QueueNode> pq = new PriorityQueue<>();
+		Set<Integer> visited = new HashSet<>();
 		
-		pq.add(new int[] { start, 0 });
+		pq.add(new QueueNode(startBit, 0, time));
 		
 		while (!pq.isEmpty()) {
-			int[] node = pq.poll();
+			QueueNode node = pq.poll();
 			
-			int visited = node[0];
-			int cost = node[1];
-			
-			if (hs.contains(visited)) {
+			if (node.time == 0) {
+				return node.cost;
+			}
+			if (visited.contains(node.bit)) {
 				continue;
 			}
-			hs.add(visited);
+			visited.add(node.bit);
 			
-			if (isEnded(visited)) {
-				return cost;
-			}
-			
-			for (int i = 0; i < N; i++) {
-				int num = visited | (1 << i);
+			for (int j = 0; j < N; j++) {
+				int nextBit = node.bit | (1 << j);
 				
-				if (num == visited) {
+				if (nextBit == node.bit) {
 					continue;
 				}
 				
-				for (int j = 0; j < N; j++) {
-					if (i == j || (visited | (1 << j)) != visited) {
-						continue;
+				int minCost = Integer.MAX_VALUE;
+				
+				for (int i = 0; i < N; i++) {
+					if ((node.bit | (1 << i)) == node.bit) {
+						minCost = Math.min(minCost, costs[i][j]);
 					}
-					pq.add(new int[] { num, cost + costs[j][i] });
+				}
+				
+				if (minCost != Integer.MAX_VALUE) {
+					pq.add(new QueueNode(nextBit, node.cost + minCost, node.time - 1));
 				}
 			}
 		}
 		return -1;
 	}
 	
-	private static boolean isEnded(int num) {
-		int cnt = 0;
+	private static class QueueNode implements Comparable<QueueNode> {
+		int bit, cost, time;
 		
-		for (int i = 0; i < N; i++) {
-			if ((num | (1 << i)) == num) {
-				if (++cnt == P) {
-					return true;
-				}
-			}
+		public QueueNode(int bit, int cost, int time) {
+			this.bit = bit;
+			this.cost = cost;
+			this.time = time;
 		}
-		return false;
+
+		@Override
+		public int compareTo(QueueNode o) {
+			return Integer.compare(cost, o.cost);
+		}
 	}
 
 }
