@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 
 public class Problem_2342 {
 	
-	private static String seq;
 	private static int len;
+	private static int[] arr;
 	private static int[][] pows;
 	private static int[][][] dp;
 
@@ -19,12 +19,19 @@ public class Problem_2342 {
 	private static void setField() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		if ((seq = br.readLine()).length() == 1) {
+		String seq = br.readLine();
+		
+		if (seq.length() == 1) {
 			return;
 		}
 		len = seq.length() / 2;
+		arr = new int[len];
 		pows = new int[5][5];
 		dp = new int[len][5][5];
+		
+		for (int i = 0; i < len; i++) {
+			arr[i] = seq.charAt(i * 2) - 48;
+		}
 		
 		for (int i = 1; i <= 4; i++) {
 			pows[0][i] = pows[i][0] = 2;
@@ -42,36 +49,44 @@ public class Problem_2342 {
 		if (len == 0) {
 			return 0;
 		}
-		int last, cur;
-		
-		cur = seq.charAt(0) - 48;
-		dp[0][0][cur] = dp[0][cur][0] = 1;
+		dp[0][0][arr[0]] = dp[0][arr[0]][0] = 1;
 		
 		for (int i = 1; i < len; i++) {
-			last = seq.charAt((i - 1) * 2) - 48;
-			cur = seq.charAt(i * 2) - 48;
-			
+			int last = arr[i - 1];
+			int cur = arr[i];
 			
 			for (int j = 0; j < 5; j++) {
-				int min;
-				
-				if (dp[i - 1][last][j] != 0) {
-					min = Math.min(dp[i][cur][j], dp[i - 1][last][j] + pows[last][cur]);
-					dp[i][cur][j] = dp[i][j][cur] = min;
-					
-					min = Math.min(dp[i][last][cur], dp[i - 1][last][j] + pows[j][cur]);
-					dp[i][last][cur] = dp[i][cur][last] = min;
+				if (dp[i - 1][last][j] == 0) {
+					continue;
 				}
+				
+				int left = dp[i - 1][last][j] + pows[last][cur];
+				
+				if (dp[i][cur][j] != 0) {
+					left = Math.min(dp[i][cur][j], left);
+				}
+				
+				int right = dp[i - 1][last][j] + pows[j][cur];
+				
+				if (dp[i][last][cur] != 0) {
+					right = Math.min(dp[i][last][cur], right);
+				}
+				
+				dp[i][cur][j] = dp[i][j][cur] = left;
+				dp[i][last][cur] = dp[i][cur][last] = right;
+				System.out.println(dp[i][cur][j] + " " + dp[i][last][cur] + " " + i);
 			}
 		}
 		
 		int min = Integer.MAX_VALUE;
-		int end = seq.charAt((len - 1) * 2) - 48;
 		
 		for (int i = 0; i < 5; i++) {
-			if (min > dp[len - 1][end][i]) {
-				min = dp[len - 1][end][i];
+			int num = dp[len - 1][arr[len - 1]][i];
+			
+			if (num == 0) {
+				continue;
 			}
+			min = Math.min(min, num);
 		}
 		return min;
 	}
