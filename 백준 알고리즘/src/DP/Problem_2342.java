@@ -49,7 +49,7 @@ public class Problem_2342 {
 		if (len == 0) {
 			return 0;
 		}
-		dp[0][0][arr[0]] = dp[0][arr[0]][0] = 1;
+		dp[0][0][arr[0]] = dp[0][arr[0]][0] = 2;
 		
 		for (int i = 1; i < len; i++) {
 			int last = arr[i - 1];
@@ -65,16 +65,14 @@ public class Problem_2342 {
 				if (dp[i][cur][j] != 0) {
 					left = Math.min(dp[i][cur][j], left);
 				}
+				dp[i][cur][j] = dp[i][j][cur] = left;
 				
 				int right = dp[i - 1][last][j] + pows[j][cur];
 				
 				if (dp[i][last][cur] != 0) {
 					right = Math.min(dp[i][last][cur], right);
 				}
-				
-				dp[i][cur][j] = dp[i][j][cur] = left;
 				dp[i][last][cur] = dp[i][cur][last] = right;
-				System.out.println(dp[i][cur][j] + " " + dp[i][last][cur] + " " + i);
 			}
 		}
 		
