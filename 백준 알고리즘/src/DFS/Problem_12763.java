@@ -3,23 +3,24 @@ package DFS;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Problem_12763 {
 	
-	private static int T, M;
+	private static int N, T, M;
+	
 	private static Node[] graph;
-	private static int[][] visited;
+	private static int[] cache;
+	private static boolean[] visited;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		int N = Integer.parseInt(br.readLine());
+		N = Integer.parseInt(br.readLine());
 		
 		graph = new Node[N + 1];
-		visited = new int[N + 1][2];
+		cache = new int[N + 1];
+		visited = new boolean[N + 1];
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
@@ -37,23 +38,39 @@ public class Problem_12763 {
 			graph[u] = new Node(v, t, c, graph[u]);
 			graph[v] = new Node(u, t, c, graph[v]);
 		}
+		
+		dfs(1, 0, 0);
+		System.out.println(cache[N] == 0 ? -1 : cache[N]);
 	}
 	
-	private static int solve() {
-		Queue<int[]> pq = new PriorityQueue<>((a, b) -> {
-			if (a[1] == b[1]) {
-				return Integer.compare(a[0], b[0]);
-			}
-			return Integer.compare(a[1], b[1]);
-		});
-		
-		pq.add(new int[] { 1, 0, 0 });
-		visited[1][0] = visited[1][1] = -1;
-		
-		while (!pq.isEmpty()) {
-			int[] poped = pq.poll();
+	private static boolean dfs(int n, int t, int c) {
+		if (cache[n] != 0 && cache[n] <= c) {
+			return false;
 		}
-		return -1;
+		if (n == N) {
+			cache[n] = c;
+			return true;
+		}
+		visited[n] = true;
+		
+		for (Node node = graph[n]; node != null; node = node.next) {
+			if (visited[node.n]) {
+				continue;
+			}
+			
+			int nt = t + node.t;
+			int nc = c + node.c;
+			
+			if (nt > T || nc > M) {
+				continue;
+			}
+			if (dfs(node.n, nt, nc)) {
+				cache[n] = c;
+			}
+		}
+		visited[n] = false;
+		
+		return false;
 	}
 	
 	private static class Node {
