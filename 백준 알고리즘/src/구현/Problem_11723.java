@@ -5,36 +5,36 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
 
 public class Problem_11723 {
+	
+	private static int S = 0;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		
-		boolean[] S = new boolean[21];
-		
 		for (int M = Integer.parseInt(br.readLine()); M > 0; M--) {
-			String[] arr = br.readLine().split(" ");
+			String str = br.readLine();
 			
-			String cmd = arr[0];
-			
-			if (cmd.equals("all")) {
-				Arrays.fill(S, true);
-			} else if (cmd.equals("empty")) {
-				Arrays.fill(S, false);
+			if (str.equals("all")) {
+				S = (1 << 20) - 1;
+			} else if (str.equals("empty")) {
+				S = 0;
 			} else {
-				int x = Integer.parseInt(arr[1]);
+				String[] arr = str.split(" ");
+				
+				String cmd = arr[0];
+				int xBit = 1 << (Integer.parseInt(arr[1]) - 1);
 				
 				if (cmd.equals("add")) {
-					S[x] = true;
+					S |= xBit;
 				} else if (cmd.equals("remove")) {
-					S[x] = false;
+					S &= ~xBit;
 				} else if (cmd.equals("check")) {
-					bw.write(S[x] ? "1\n" : "0\n");
+					bw.write((S | xBit) == S ? "1\n" : "0\n");
 				} else {
-					S[x] = !S[x];
+					S ^= xBit;
 				}
 			}
 		}
