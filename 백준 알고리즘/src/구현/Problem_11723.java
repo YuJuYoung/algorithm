@@ -28,12 +28,15 @@ public class Problem_11723 {
 				int xBit = 1 << (Integer.parseInt(arr[1]) - 1);
 				
 				if (cmd.equals("add")) {
+					// or연산
 					S |= xBit;
 				} else if (cmd.equals("remove")) {
+					//xBit를 반전 시킨 뒤 and연산
 					S &= ~xBit;
 				} else if (cmd.equals("check")) {
 					bw.write((S | xBit) == S ? "1\n" : "0\n");
 				} else {
+					//xor연산, 대응되는 비트가 서로 다르면 1을 반환
 					S ^= xBit;
 				}
 			}
