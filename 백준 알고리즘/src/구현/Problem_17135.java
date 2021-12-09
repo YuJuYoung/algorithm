@@ -77,7 +77,7 @@ public class Problem_17135 {
 				continue;
 			}
 			
-			for (int i = y; i >= y - (j - x + d + 1); i--) {
+			for (int i = y; Math.abs(j - x) + y - i <= d; i--) {
 				if (i < 0) {
 					continue;
 				}
