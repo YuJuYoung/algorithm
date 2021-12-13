@@ -32,17 +32,19 @@ public class Problem_18111 {
 			}
 		}
 		
-		int[] ans = { Integer.MAX_VALUE, maxH };
+		int[] last = { play(minH), minH };
 		
-		for (int height = minH; height <= maxH; height++) {
+		for (int height = minH + 1; height <= maxH; height++) {
 			int time = play(height);
 			
-			if (time < ans[0] || (time == ans[0] && ans[1] < height)) {
-				ans[0] = time;
-				ans[1] = height;
+			if (time > last[0]) {
+				print(last);
+				return;
 			}
+			last[0] = time;
+			last[1]++;
 		}
-		System.out.println(ans[0] + " " + ans[1]);
+		print(last);
 	}
 	
 	private static int play(int height) {
@@ -51,21 +53,23 @@ public class Problem_18111 {
 		
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
+				int dist = Math.abs(height - map[i][j]);
+				
 				if (map[i][j] < height) {
-					int plus = height - map[i][j];
-					
-					time += plus;
-					blockCount -= plus;
+					time += dist;
+					blockCount -= dist;
 				}
 				if (map[i][j] > height) {
-					int minus = map[i][j] - height;
-					
-					time += minus * 2;
-					blockCount += minus;
+					time += dist * 2;
+					blockCount += dist;
 				}
 			}
 		}
 		return blockCount < 0 ? Integer.MAX_VALUE : time;
+	}
+	
+	private static void print(int[] ans) {
+		System.out.println(ans[0] + " " + ans[1]);
 	}
 
 }
