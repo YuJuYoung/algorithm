@@ -13,6 +13,7 @@ public class Problem_1300 {
 		
 		N = Integer.parseInt(br.readLine());
 		k = Integer.parseInt(br.readLine());
+		
 	}
 
 }
