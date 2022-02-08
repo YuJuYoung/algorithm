@@ -43,15 +43,14 @@ public class Problem_1504 {
 		int toA = getMin(1, a);
 		int toB = getMin(1, b);
 		int AtoB = getMin(a, b);
-		int BtoA = AtoB;
 		int AtoN = getMin(a, N);
 		int BtoN = getMin(b, N);
 		
 		int ab = toA + AtoB + BtoN;
-		int ba = toB + BtoA + AtoN;
+		int ba = toB + AtoB + AtoN;
 		
 		boolean pab = isPossible(toA, AtoB, BtoN);
-		boolean pba = isPossible(toB, BtoA, AtoN);
+		boolean pba = isPossible(toB, AtoB, AtoN);
 		
 		if (pab) {
 			if (!pba) {
