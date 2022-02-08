@@ -6,46 +6,36 @@ import java.io.InputStreamReader;
 
 public class Problem_1300 {
 	
-	private static long N, k;
+	private static int N, k;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		N = Long.parseLong(br.readLine());
-		k = Long.parseLong(br.readLine());
+		N = Integer.parseInt(br.readLine());
+		k = Integer.parseInt(br.readLine());
 		
-		System.out.println(binarysearch(1, N * N, k));
+		System.out.println(binarysearch(1, k, k));
 	}
 	
-	private static long binarysearch(long s, long e, long k) {
+	private static int binarysearch(int s, int e, int k) {
 		while (s < e) {
-			long m = (s + e) / 2;
+			int m = (s + e) / 2;
+			int count = getCount(m);
 			
-			long[] count = getCount(m);
-			long tot = count[0];
-			long same = count[1];
-			
-			if (tot < k) {
+			if (count < k) {
 				s = m + 1;
 			} else {
-				if (tot - same < k) {
-					return m;
-				}
 				e = m;
 			}
 		}
 		return s;
 	}
 	
-	private static long[] getCount(long m) {
-		long[] count = new long[2];
+	private static int getCount(int m) {
+		int count = 0;
 		
 		for (int i = 1; i <= N && i <= m; i++) {
-			count[0] += Math.min(N, m / i);
-			
-			if (m % i == 0 && m / i <= N) {
-				count[1]++;
-			}
+			count += Math.min(N, m / i);
 		}
 		return count;
 	}
