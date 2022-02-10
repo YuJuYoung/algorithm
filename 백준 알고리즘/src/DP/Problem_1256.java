@@ -18,7 +18,7 @@ public class Problem_1256 {
 		int N = Integer.parseInt(stk.nextToken());
 		int M = Integer.parseInt(stk.nextToken());
 		
-		long K = (long)Integer.parseInt(stk.nextToken());
+		long K = Integer.parseInt(stk.nextToken());
 		
 		
 		int n = N + M;
