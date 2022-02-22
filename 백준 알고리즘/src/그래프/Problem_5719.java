@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 public class Problem_5719 {
 	
 	private static int N, M, S, D;
-	private static Node[] graph;
+	private static int[][] graph;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -30,8 +30,7 @@ public class Problem_5719 {
 			
 			S = Integer.parseInt(st.nextToken());
 			D = Integer.parseInt(st.nextToken());
-			
-			graph = new Node[N + 1];
+			graph = new int[N][N];
 			
 			for (int i = 0; i < M; i++) {
 				st = new StringTokenizer(br.readLine());
@@ -40,51 +39,15 @@ public class Problem_5719 {
 				int V = Integer.parseInt(st.nextToken());
 				int P = Integer.parseInt(st.nextToken());
 				
-				graph[U] = new Node(V, P, graph[U]);
+				graph[U][V] = P;
 			}
-			bw.write(bfs() + "\n");
+			bw.write(solve() + "\n");
 		}
 		bw.close();
 	}
 	
-	private static int bfs() {
-		Queue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
-		pq.add(new int[] { S, 0 });
-		
-		int min = Integer.MAX_VALUE;
-		
-		while (!pq.isEmpty()) {
-			int[] node = pq.poll();
-			
-			int n = node[0];
-			int sum = node[1];
-			
-			if (n == D) {
-				if (min < sum) {
-					return sum;
-				}
-				min = sum;
-			} else {
-				for (Node next = graph[n]; next != null; next = next.next) {
-					if (!next.passed) {
-						pq.add(new int[] { next.n, sum + next.p });
-					}
-				}
-			}
-		}
+	private static int solve() {
 		return -1;
-	}
-	
-	private static class Node {
-		int n, p;
-		boolean passed = false;
-		Node next;
-		
-		public Node(int n, int p, Node next) {
-			this.n = n;
-			this.p = p;
-			this.next = next;
-		}
 	}
 
 }
