@@ -8,7 +8,7 @@ import java.io.OutputStreamWriter;
 
 public class Problem_10422 {
 	
-	private static int[] count = getCount();
+	private static long[] count = getCount();
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,12 +20,15 @@ public class Problem_10422 {
 		bw.close();
 	}
 	
-	private static int[] getCount() {
-		int[] count = new int[5001];
-		count[2] = 1;
+	private static long[] getCount() {
+		long[] count = new long[5001];
+		count[0] = count[2] = 1;
 		
 		for (int i = 4; i <= 5000; i += 2) {
-			count[i] = count[i - 2] * 2 % 1000000007;
+			for (int j = 0; j <= i - 2; j += 2) {
+				count[i] += count[j] * count[i - j - 2];
+				count[i] %= 1000000007;
+			}
 		}
 		return count;
 	}
