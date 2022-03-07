@@ -5,57 +5,67 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class Problem_6549 {
+	
+	private static int n;
+	private static int[] arr;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		
 		while (true) {
-			String[] arr = br.readLine().split(" ");
+			StringTokenizer st = new StringTokenizer(br.readLine());
 			
-			if (arr[0].equals("0")) {
+			if ((n = Integer.parseInt(st.nextToken())) == 0) {
 				break;
 			}
-			bw.write(Math.max(orderMax(arr), reverseMax(arr)) + "\n");
+			arr = new int[n];
+			
+			for (int i = 0; i < n; i++) {
+				arr[i] = Integer.parseInt(st.nextToken());
+			}
+			bw.write(divide(0, n - 1) + "\n");
 		}
 		bw.close();
 	}
 	
-	private static long orderMax(String[] arr) {
-		Stack<int[]> stack = new Stack<>();
-		long max = 0;
-		
-		for (String str : arr) {
-			max = Math.max(max, getArea(stack, Integer.parseInt(str)));
+	private static long divide(int l, int r) {
+		if (l == r) {
+			return arr[l];
 		}
-		return max;
+		int m = (l + r) / 2;
+		
+		long leftArea = divide(l, m);
+		long rightArea = divide(m + 1, r);
+		
+		long max = Math.max(leftArea, rightArea);
+		long area = getArea(l, r, m);
+		
+		return Math.max(max, area);
 	}
 	
-	private static long reverseMax(String[] arr) {
-		Stack<int[]> stack = new Stack<>();
-		long max = 0;
+	private static long getArea(int l, int r, int m) {
+		int toRight = m, toLeft = m;
+		long h = arr[m], max = arr[m];
 		
-		for (int i = arr.length - 1; i > -1; i--) {
-			max = Math.max(max, getArea(stack, Integer.parseInt(arr[i])));
-		}
-		return max;
-	}
-	
-	private static long getArea(Stack<int[]> stack, int num) {
-		int width = 1;;
-		
-		if (stack.isEmpty() || stack.peek()[0] < num) {
-			stack.push(new int[] { num, 1 });
-		} else {
-			while (!stack.isEmpty() && stack.peek()[0] >= num) {
-				width += stack.pop()[1];
+		while (l < toLeft || toRight < r) {
+			if (toRight == r) {
+				h = Math.min(h, arr[--toLeft]);
+			} else if (toLeft == l) {
+				h = Math.min(h, arr[++toRight]);
+			} else {
+				if (arr[toLeft - 1] < arr[toRight + 1]) {
+					h = Math.min(h, arr[++toRight]);
+				} else {
+					h = Math.min(h, arr[--toLeft]);
+				}
 			}
-			stack.push(new int[] { num, width });
+			max = Math.max(max, h * (toRight - toLeft + 1));
 		}
-		return (long) num * width;
+		return max;
 	}
 
 }
