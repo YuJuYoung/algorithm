@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Problem_6549 {
@@ -27,43 +28,46 @@ public class Problem_6549 {
 			for (int i = 0; i < n; i++) {
 				arr[i] = Integer.parseInt(st.nextToken());
 			}
-			bw.write(divide(0, n - 1) + "\n");
+			bw.write(solve() + "\n");
 		}
 		bw.close();
 	}
 	
-	private static long divide(int l, int r) {
-		if (l == r) {
-			return arr[l];
-		}
-		int m = (l + r) / 2;
+	private static long solve() {
+		Stack<int[]> stack = new Stack<>();
+		long max = 0;
 		
-		long leftArea = divide(l, m);
-		long rightArea = divide(m + 1, r);
-		
-		long max = Math.max(leftArea, rightArea);
-		long area = getArea(l, r, m);
-		
-		return Math.max(max, area);
-	}
-	
-	private static long getArea(int l, int r, int m) {
-		int toRight = m, toLeft = m;
-		long h = arr[m], max = arr[m];
-		
-		while (l < toLeft || toRight < r) {
-			if (toRight == r) {
-				h = Math.min(h, arr[--toLeft]);
-			} else if (toLeft == l) {
-				h = Math.min(h, arr[++toRight]);
+		for (int i = 0; i < n; i++) {
+			int num = arr[i];
+			
+			if (stack.isEmpty()) {
+				stack.push(new int[] { num, i });
 			} else {
-				if (arr[toLeft - 1] < arr[toRight + 1]) {
-					h = Math.min(h, arr[++toRight]);
-				} else {
-					h = Math.min(h, arr[--toLeft]);
+				if (stack.peek()[0] == num) {
+					continue;
 				}
+				int idx = i;
+				
+				while (!stack.isEmpty()) {
+					if (stack.peek()[0] < num) {
+						break;
+					}
+					int[] node = stack.pop();
+					
+					idx = node[1];
+					max = Math.max(max, (long) node[0] * (i - idx));
+				}
+				stack.push(new int[] { num, idx });
 			}
-			max = Math.max(max, h * (toRight - toLeft + 1));
+		}
+		
+		while (!stack.isEmpty()) {
+			int[] node = stack.pop();
+			
+			long num = node[0];
+			int idx = node[1];
+			
+			max = Math.max(max, num * (n - idx));
 		}
 		return max;
 	}
