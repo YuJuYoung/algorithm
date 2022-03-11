@@ -8,44 +8,43 @@ import java.util.StringTokenizer;
 public class Problem_1199 {
 	
 	private static int N;
-	private static int[][] arr;
 	private static boolean[][] visited;
-	private static StringBuilder ans = new StringBuilder();
+	private static Node[] graph;
+	private static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		N = Integer.parseInt(br.readLine());
-		arr = new int[N][N];
-		visited = new boolean[N][N];
+		visited = new boolean[N + 1][2];
+		graph = new Node[N + 1];
 		
-		for (int i = 0; i < N; i++) {
+		for (int i = 1; i <= N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			
-			for (int j = 0; j < N; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
-			}
-		}
-		
-		dfs(0, 1);
-		System.out.println(ans.reverse());
-	}
-	
-	private static boolean dfs(int n, int count) {
-		if (count == N) {
-			if (arr[n][0] > 0) {
-				return true;
-			}
-			return false;
-		} else {
-			for (int i = 1; i < N; i++) {
-				if (arr[n][i] > 0 && !visited[n][i]) {
-					visited[n][i] = true;
-					arr[n][i]--;
+			for (int j = 1; j <= N; j++) {
+				if (Integer.parseInt(st.nextToken()) == 1) {
+					graph[i] = new Node(j, graph[i]);
 				}
 			}
 		}
-		return false;
+	}
+	
+	private static boolean dfs1(int n) {
+		for (Node next = graph[n]; next != null; next = next.next) {
+			
+		}
+	}
+	
+	private static class Node {
+		boolean visited = false;
+		int n;
+		Node next;
+		
+		public Node(int n, Node node) {
+			this.n = n;
+			next = node;
+		}
 	}
 
 }
