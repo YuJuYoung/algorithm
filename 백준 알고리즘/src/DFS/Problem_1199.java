@@ -30,12 +30,6 @@ public class Problem_1199 {
 		}
 	}
 	
-	private static boolean dfs1(int n) {
-		for (Node next = graph[n]; next != null; next = next.next) {
-			
-		}
-	}
-	
 	private static class Node {
 		boolean visited = false;
 		int n;
