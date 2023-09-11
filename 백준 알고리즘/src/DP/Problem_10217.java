@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -12,7 +13,6 @@ public class Problem_10217 {
 	
 	private static int N, M, K;
 	private static Ticket[] tickets = null;
-	private static int[][] distances = null;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -42,84 +42,67 @@ public class Problem_10217 {
 	}
 	
 	private static String solve() {
-		distances = new int[M + 1][N];
-		for (int i = 1; i <= M; i++) {
-			for (int j = 0; j < N; j++) {
-				distances[i][j] = Integer.MAX_VALUE;
+		int[][] dp = new int[N][M + 1];
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j <= M; j++) {
+				dp[i][j] = Integer.MAX_VALUE;
 			}
 		}
-		distances[0][0] = 0;
+		dp[0][0] = 0;
+		
+		boolean[] visited = new boolean[N];
 		
 		PriorityQueue<PQNode> pq = new PriorityQueue<>();
-		pq.add(new PQNode(0, 0, 0));
-		
-		int[][] minDistances = new int[N][2];
-		for (int i = 1; i < N; i++) {
-			minDistances[i][0] = minDistances[i][1] = Integer.MAX_VALUE;
-		}
+		pq.add(new PQNode(0, 0));
 		
 		// 다익스트라
 		while (!pq.isEmpty()) {
 			PQNode node = pq.poll();
+			int u = node.u;
 			
-			if (node.start == N - 1) {
-				return node.d + "\n";
-			}
-			
-			if (compareDistance(node.c, node.d, minDistances[node.start][0], minDistances[node.start][1]) > 0) {
+			if (visited[u]) {
 				continue;
 			}
-
-			for (Ticket ticket = tickets[node.start]; ticket != null; ticket = ticket.next) {
-				int to = ticket.to;
-				int nc = node.c + ticket.c;
-				int nd = node.d + ticket.d;
+			visited[u] = true;
+			
+			for (Ticket ticket = tickets[u]; ticket != null; ticket = ticket.another) {
+				int min = Integer.MAX_VALUE;
+				int v = ticket.v;
 				
-				if (nc <= M && distances[nc][to] > nd) {
-					distances[nc][to] = nd;
-					pq.add(new PQNode(to, nc, nd));
-					
-					if (compareDistance(nc, nd, minDistances[to][0], minDistances[to][1]) < 0) {
-						minDistances[to][0] = nc;
-						minDistances[to][1] = nd;
+				for (int c = 0; c + ticket.c <= M; c++) {
+					if (dp[u][c] == Integer.MAX_VALUE) {
+						continue;
 					}
+					int nc = c + ticket.c;
+					int nd = dp[u][c] + ticket.d;
+					
+					dp[v][nc] = Math.min(dp[v][nc], nd);
+					min = Math.min(min, dp[v][nc]);
 				}
+				pq.add(new PQNode(v, min));
 			}
 		}
-		return "Poor KCM\n";
-	}
-	
-	private static int compareDistance(int n1, int d1, int n2, int d2) {
-		if (n1 == n2 && d1 == d2) {
-			return 0;
-		}
-		if (n1 <= n2 && d1 <= d2) {
-			return -1;
-		}
-		if (n1 >= n2 && d1 >= d2) {
-			return 1;
-		}
-		return 0;
+		Arrays.sort(dp[N - 1]);
+		return (dp[N - 1][0] == Integer.MAX_VALUE ? "Poor KCM" : dp[N - 1][0]) + "\n";
 	}
 	
 	private static class Ticket {
-		int to, c, d;
-		Ticket next;
+		int v, c, d;
+		Ticket another;
 		
-		public Ticket(int to, int c, int d, Ticket ticket) {
-			this.to = to;
+		public Ticket(int v, int c, int d, Ticket ticket) {
+			this.v = v;
 			this.c = c;
 			this.d = d;
-			next = ticket;
+			another = ticket;
 		}
 	}
 	
 	private static class PQNode implements Comparable<PQNode> {
-		int start, c, d;
+		int u, d;
 		
-		public PQNode(int start, int c, int d) {
-			this.start = start;
-			this.c = c;
+		public PQNode(int u, int d) {
+			this.u = u;
 			this.d = d;
 		}
 
