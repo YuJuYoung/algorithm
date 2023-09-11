@@ -34,11 +34,8 @@ public class Problem_1022 {
 			}
 		}
 		
-		int maxDigit = 0;
-		while (maxVal / ((int) Math.pow(10, maxDigit)) > 0) {
-			maxDigit++;
-		}
-		printVortex(maxDigit);
+		int maxDigit = (int) Math.log10(maxVal);
+		printVortex(maxDigit + 1);
 	}
 	
 	private static int getVal(int i, int j) {
@@ -64,7 +61,7 @@ public class Problem_1022 {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < r2 - r1 + 1; i++) {
 			for (int j = 0; j < c2 - c1 + 1; j++) {
-				sb.append(String.format("%" + maxDigit + "s", vortex[i][j]));
+				sb.append(String.format("%" + maxDigit + "d", vortex[i][j]));
 				sb.append(" ");
 			}
 			sb.append("\n");
