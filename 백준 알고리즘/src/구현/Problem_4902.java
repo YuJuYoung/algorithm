@@ -1,72 +1,80 @@
 package ±¸Çö;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
 public class Problem_4902 {
 	
-	private static int N, max;
-	private static int[][] cache;
+	private static int[][] prefixSum;
+	private static int lineNum;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		StringBuilder sb = new StringBuilder();
 		
-		int t = 1;
-		
+		int testCaseNum = 1;
 		while (true) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			
-			if ((N = Integer.parseInt(st.nextToken())) == 0) {
+			lineNum = Integer.parseInt(st.nextToken());
+			if (lineNum == 0) {
 				break;
 			}
-			cache = new int[N][N * 2 - 1];
+			prefixSum = new int[lineNum][(lineNum - 1) * 2 + 2];
 			
-			max = cache[0][0] = Integer.parseInt(st.nextToken());
-			
-			for (int i = 1; i < N; i++) {
-				for (int j = 0; j < (i + 1) * 2 - 1; j++) {
-					int num = Integer.parseInt(st.nextToken());
-					
-					max = Math.max(max, num);
-					cache[i][j] = cache[i - 1][j] + num;
+			for (int i = 1; i <= lineNum; i++) {
+				for (int j = 1; j <= (i - 1) * 2 + 1; j++) {
+					prefixSum[i - 1][j] = Integer.parseInt(st.nextToken());
+					prefixSum[i - 1][j] = prefixSum[i - 1][j] + prefixSum[i - 1][j - 1];
 				}
 			}
 			
-			setMax();
-			bw.write(t++ + ". " + max);
-			bw.newLine();
+			sb.append(testCaseNum++);
+			sb.append(". ");
+			sb.append(solve());
+			sb.append("\n");
 		}
-		bw.close();
+		System.out.print(sb);
 	}
 	
-	private static void setMax() {
-		for (int len = 1; len < N; len++) {
-			for (int i = 1; i < N; i++) {
-				for (int j = 0; j < (i + 1) * 2 - 1; j++) {
-					max = Math.max(max, getArea(len, i, j));
+	private static int solve() {
+		int maxSize = Integer.MIN_VALUE;
+		for (int i = 1; i <= lineNum; i++) {
+			for (int j = 0; j < (i - 1) * 2 + 1; j++) {
+				if (j % 2 == 0) {
+					maxSize = Math.max(maxSize, getNormalTriangleMaxSize(i, j));
+				} else {
+					maxSize = Math.max(maxSize, getInvertedTriangleMaxSize(i ,j));
 				}
 			}
 		}
+		return maxSize;
 	}
 	
-	private static int getArea(int len, int i, int j) {
-		if (j - len < 0) {
-			return -1;
+	// »ï°¢Çü
+	private static int getNormalTriangleMaxSize(int i, int j) {
+		int maxTriangle = Integer.MIN_VALUE;
+		int triangleSum = 0;
+		for (int k = i; k <= lineNum; k++) {
+			triangleSum += prefixSum[k - 1][j + (k - i) * 2 + 1] - prefixSum[k - 1][j];
+			maxTriangle = Math.max(maxTriangle, triangleSum);
 		}
-		
-		int area = 0;
-		int r = 1;
-		
-		for (int k = j; k >= j - len; k--) {
-			area += cache[i][k] - cache[i - r][k];
-			r += 2;
+		return maxTriangle;
+	}
+	
+	// ¿ª»ï°¢Çü
+	private static int getInvertedTriangleMaxSize(int i, int j) {
+		int maxTriangle = Integer.MIN_VALUE;
+		int triangleSum = 0;
+        
+        // j - (i - k) * 2 ¿ª»ï°¢ÇüÀÇ ÁÂÃø»ó´Ü ¼öÆò ÁÂÇ¥ - 1
+        // (k - 1) * 2 + 1 ¿ª»ï°¢ÇüÀÇ ¿ìÃø»ó´Ü ¼öÆò ÁÂÇ¥
+		for (int k = i; j - (i - k) * 2 >= 0 && j + 1 <= (k - 1) * 2 + 1; k--) {
+			triangleSum += prefixSum[k - 1][j + 1] - prefixSum[k - 1][j - (i - k) * 2];
+			maxTriangle = Math.max(maxTriangle, triangleSum);
 		}
-		return area;
+		return maxTriangle;
 	}
 
 }
