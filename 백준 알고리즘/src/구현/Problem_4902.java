@@ -1,4 +1,4 @@
-package ±¸Çö;
+package êµ¬í˜„;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class Problem_4902 {
 		return maxSize;
 	}
 	
-	// »ï°¢Çü
+	// ï¿½ï°¢ï¿½ï¿½
 	private static int getNormalTriangleMaxSize(int i, int j) {
 		int maxTriangle = Integer.MIN_VALUE;
 		int triangleSum = 0;
@@ -63,13 +63,13 @@ public class Problem_4902 {
 		return maxTriangle;
 	}
 	
-	// ¿ª»ï°¢Çü
+	// ï¿½ï¿½ï¿½ï°¢ï¿½ï¿½
 	private static int getInvertedTriangleMaxSize(int i, int j) {
 		int maxTriangle = Integer.MIN_VALUE;
 		int triangleSum = 0;
         
-        // j - (i - k) * 2 ¿ª»ï°¢ÇüÀÇ ÁÂÃø»ó´Ü ¼öÆò ÁÂÇ¥ - 1
-        // (k - 1) * 2 + 1 ¿ª»ï°¢ÇüÀÇ ¿ìÃø»ó´Ü ¼öÆò ÁÂÇ¥
+        // j - (i - k) * 2 ï¿½ï¿½ï¿½ï°¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ - 1
+        // (k - 1) * 2 + 1 ï¿½ï¿½ï¿½ï°¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥
 		for (int k = i; j - (i - k) * 2 >= 0 && j + 1 <= (k - 1) * 2 + 1; k--) {
 			triangleSum += prefixSum[k - 1][j + 1] - prefixSum[k - 1][j - (i - k) * 2];
 			maxTriangle = Math.max(maxTriangle, triangleSum);

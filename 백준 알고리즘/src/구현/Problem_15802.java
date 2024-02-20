@@ -1,4 +1,4 @@
-package ±¸Çö;
+package êµ¬í˜„;
 
 public class Problem_15802 {
 

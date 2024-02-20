@@ -1,4 +1,4 @@
-package ±¸Çö;
+package êµ¬í˜„;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,15 +28,15 @@ public class Problem_11723 {
 				int xBit = 1 << (Integer.parseInt(arr[1]) - 1);
 				
 				if (cmd.equals("add")) {
-					// or¿¬»ê
+					// orï¿½ï¿½ï¿½ï¿½
 					S |= xBit;
 				} else if (cmd.equals("remove")) {
-					//xBit¸¦ ¹ÝÀü ½ÃÅ² µÚ and¿¬»ê
+					//xBitï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å² ï¿½ï¿½ andï¿½ï¿½ï¿½ï¿½
 					S &= ~xBit;
 				} else if (cmd.equals("check")) {
 					bw.write((S | xBit) == S ? "1\n" : "0\n");
 				} else {
-					//xor¿¬»ê, ´ëÀÀµÇ´Â ºñÆ®°¡ ¼­·Î ´Ù¸£¸é 1À» ¹ÝÈ¯
+					//xorï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½È¯
 					S ^= xBit;
 				}
 			}

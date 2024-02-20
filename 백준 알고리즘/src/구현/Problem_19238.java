@@ -1,4 +1,4 @@
-package ±¸Çö;
+package êµ¬í˜„;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class Problem_19238 {
 			int passengerX = Integer.parseInt(st.nextToken()) - 1;
 			int goalY = Integer.parseInt(st.nextToken()) - 1;
 			int goalX = Integer.parseInt(st.nextToken()) - 1;
-			// ¿¹) goalYÀÌ 10, goalX°¡ 12¶ó¸é map[passangerY][passengerX]Àº 11012;
+			// ï¿½ï¿½) goalYï¿½ï¿½ 10, goalXï¿½ï¿½ 12ï¿½ï¿½ï¿½ map[passangerY][passengerX]ï¿½ï¿½ 11012;
 			map[passengerY][passengerX] = goalY * 100 + goalX + 10000;
 		}
 		
@@ -61,7 +61,7 @@ public class Problem_19238 {
 		return taxi.fuel;
 	}
 	
-	// ¹«»çÈ÷ ¼Õ´Ô¿¡°Ô µµÂøÇß´Ù¸é ¼Õ´ÔÀÇ ¸ñÇ¥ À§Ä¡¸¦, ¾Æ´Ï¸é nullÀ» ¹ÝÈ¯
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ´Ô¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´Ù¸ï¿½ ï¿½Õ´ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½Ä¡ï¿½ï¿½, ï¿½Æ´Ï¸ï¿½ nullï¿½ï¿½ ï¿½ï¿½È¯
 	private static Point moveToPassenger() {
 		if (map[taxi.y][taxi.x] >= 10000) {
 			int goalCode = map[taxi.y][taxi.x];
@@ -74,7 +74,7 @@ public class Problem_19238 {
 		boolean[][] visited = new boolean[N][N];
 		visited[taxi.y][taxi.x] = true;
 		
-		// »ó, ÇÏ, ÁÂ, ¿ì ÁÂÇ¥¸¦ ±¸ÇÒ¶§ »ç¿ë
+		// ï¿½ï¿½, ï¿½ï¿½, ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½
 		int[] dx = {1, 0, -1, 0};
 		int[] dy = {0, 1, 0, -1};
 		
@@ -82,9 +82,9 @@ public class Problem_19238 {
 		while (taxi.fuel-- > 0 && !q.isEmpty()) {
 			int size = q.size();
 			
-			// ½Â°´ÀÇ Å¾½Â À§Ä¡
+			// ï¿½Â°ï¿½ï¿½ï¿½ Å¾ï¿½ï¿½ ï¿½ï¿½Ä¡
 			Point resPassengerPoint = null;
-			// ¹ß°ßÇÑ ½Â°´ÀÇ ¸ñÇ¥ÀÇ À§Ä¡
+			// ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Â°ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½Ä¡
 			Point resGoalPoint = null;
 			
 			while (size-- > 0) {
@@ -119,7 +119,7 @@ public class Problem_19238 {
 			}
 			if (resGoalPoint != null && resPassengerPoint != null) {
 				map[resPassengerPoint.y][resPassengerPoint.x] = 0;
-				// ÅÃ½ÃÀÇ À§Ä¡¸¦ ½Â°´ÀÇ À§Ä¡·Î º¯°æ
+				// ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Â°ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				taxi.x = resPassengerPoint.x;
 				taxi.y = resPassengerPoint.y;
 				return resGoalPoint;
@@ -128,7 +128,7 @@ public class Problem_19238 {
 		return null;
 	}
 	
-	// Á¤¼ö Å¸ÀÔÀÇ ÄÚµå¸¦ Point °´Ã¼·Î º¯È¯
+	// ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¸¦ Point ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½È¯
 	private static Point decodeGoalCode(int goalCode) {
 		goalCode -= 10000;
 		int goalY = goalCode / 100;
@@ -136,7 +136,7 @@ public class Problem_19238 {
 		return new Point(goalY, goalX);
 	}
 	
-	// ½Â°´À» µ¥·Á´ÙÁÖ´Âµ¥ ¼º°øÇÏ¸é true, ½ÇÆÐÇÏ¸é false¸¦ ¹ÝÈ¯
+	// ï¿½Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´Âµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ true, ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ falseï¿½ï¿½ ï¿½ï¿½È¯
 	private static boolean takePassenger(Point goalPoint) {
 		Queue<Point> q = new LinkedList<>();
 		q.add(new Point(taxi.y, taxi.x));
@@ -144,7 +144,7 @@ public class Problem_19238 {
 		visited[taxi.y][taxi.x] = true;
 		int distance = 0;
 		
-		// »ó, ÇÏ, ÁÂ, ¿ì ÁÂÇ¥¸¦ ±¸ÇÒ¶§ »ç¿ë
+		// ï¿½ï¿½, ï¿½ï¿½, ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½
 		int[] dx = {1, 0, -1, 0};
 		int[] dy = {0, 1, 0, -1};
 		
@@ -163,7 +163,7 @@ public class Problem_19238 {
 						if (nextX == goalPoint.x && nextY == goalPoint.y) {
 							taxi.x = goalPoint.x;
 							taxi.y = goalPoint.y;
-							/* ¾Æ·¡ ½ÄÀº ´ÙÀ½ ½ÄÀ» °£Ãß¸° ½Ä
+							/* ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ ï¿½ï¿½
 							 * taxi.fuel -= distance;
 							 * taxi.fuel += distance * 2; 
 							 * */
